@@ -1,8 +1,11 @@
 <template>
+  <!-- Skip-to-main for keyboard / screen reader users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <div class="layout">
     <AppHeader />
 
-    <main class="main">
+    <main id="main-content" class="main" role="main">
       <Transition name="hero">
         <HeroSection v-if="messages.length === 0" />
       </Transition>
@@ -10,12 +13,13 @@
       <ChatThread
         v-show="messages.length > 0"
         :messages="messages"
+        :busy="waiting"
         ref="threadRef"
       />
 
       <InputBar :disabled="waiting" @send="handleSend" />
 
-      <p class="hint">
+      <p class="hint" aria-hidden="true">
         Press <kbd>Enter</kbd> to send &nbsp;·&nbsp;
         <kbd>Shift+Enter</kbd> for new line
       </p>
@@ -24,14 +28,15 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
-import AppHeader from './components/AppHeader.vue'
+import { nextTick, ref } from 'vue'
+import AppHeader   from './components/AppHeader.vue'
 import HeroSection from './components/HeroSection.vue'
-import ChatThread from './components/ChatThread.vue'
-import InputBar from './components/InputBar.vue'
+import ChatThread  from './components/ChatThread.vue'
+import InputBar    from './components/InputBar.vue'
+import { useMessages } from './composables/useMessages.js'
 
-const messages = ref([])
-const waiting  = ref(false)
+const { messages } = useMessages()
+const waiting   = ref(false)
 const threadRef = ref(null)
 
 async function handleSend(text) {
@@ -59,7 +64,8 @@ async function scrollToBottom() {
 .layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .main {
@@ -110,5 +116,19 @@ kbd {
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .main {
+    padding: 16px 12px;
+    gap: 16px;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+  }
+
+  .hint {
+    display: none;
+  }
 }
 </style>

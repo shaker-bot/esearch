@@ -1,23 +1,35 @@
 <template>
-  <div class="input-wrap" :class="{ focused }">
+  <div
+    class="input-wrap"
+    :class="{ focused }"
+    role="search"
+    aria-label="Chat input area"
+  >
+    <!-- Visually hidden label associates the textarea for assistive tech -->
+    <label for="chat-input" class="sr-only">Message eSearch</label>
+
     <textarea
+      id="chat-input"
       ref="textareaEl"
       v-model="draft"
       rows="1"
       placeholder="Message eSearch…"
+      :aria-disabled="disabled"
+      :aria-label="disabled ? 'Waiting for response…' : 'Message eSearch'"
       @input="autoResize"
       @keydown.enter.exact.prevent="submit"
       @focus="focused = true"
       @blur="focused = false"
     />
+
     <button
       class="send-btn"
       :class="{ active: sending }"
       :disabled="!draft.trim() || disabled"
-      aria-label="Send"
+      aria-label="Send message"
       @click="submit"
     >
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path
           d="M8 13V3M3 8l5-5 5 5"
           stroke="currentColor"
@@ -77,7 +89,6 @@ async function submit() {
   align-items: flex-end;
   padding: 12px 14px;
   gap: 10px;
-  /* override global to add box-shadow */
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease !important;
   animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
@@ -93,19 +104,17 @@ textarea {
   border: none;
   outline: none;
   color: var(--text);
-  font-size: 0.94rem;
+  /* 16px prevents iOS Safari from auto-zooming on focus */
+  font-size: 16px;
   line-height: 1.6;
   resize: none;
   max-height: 160px;
   overflow-y: auto;
   font-family: inherit;
-  /* override global transition — color only */
   transition: color 0.25s ease !important;
 }
 
-textarea::placeholder {
-  color: var(--text-placeholder);
-}
+textarea::placeholder { color: var(--text-placeholder); }
 
 .send-btn {
   width: 34px;
@@ -119,7 +128,10 @@ textarea::placeholder {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  /* override global — keep transform snappy */
+  /* Minimum touch target size (WCAG 2.5.5) */
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 12px;
   transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.12s ease !important;
 }
 
@@ -130,23 +142,27 @@ textarea::placeholder {
   cursor: default;
 }
 
-.send-btn:not(:disabled):hover {
-  background: var(--accent-hover);
-}
+.send-btn:not(:disabled):hover { background: var(--accent-hover); }
 
 .send-btn:not(:disabled):active,
-.send-btn.active {
-  transform: scale(0.84);
+.send-btn.active { transform: scale(0.84); }
+
+/* Focus ring for keyboard users */
+.send-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .input-wrap {
+    border-radius: 14px;
+    padding: 10px 12px;
   }
 }
 </style>

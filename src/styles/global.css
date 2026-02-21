@@ -46,7 +46,7 @@
   --avatar-user-bg:     #7c6aff;
   --avatar-user-text:   #fff;
   --avatar-echo-bg:     #222228;
-  --avatar-echo-text:   #7878888;
+  --avatar-echo-text:   #888898;
   --avatar-echo-border: #333340;
 
   --dot-color:          #484850;
@@ -58,6 +58,11 @@
   --shadow-input:       0 0 0 3px rgba(124, 106, 255, 0.12);
 
   --glow:               radial-gradient(ellipse 60% 40% at 50% 0%, rgba(124, 106, 255, 0.08) 0%, transparent 70%);
+
+  /* Scrollbar */
+  --scrollbar-track:    transparent;
+  --scrollbar-thumb:    #2e2e38;
+  --scrollbar-thumb-hover: #3e3e4e;
 }
 
 /* ── CSS custom properties — light ── */
@@ -101,18 +106,27 @@
   --shadow-input:       0 0 0 3px rgba(124, 106, 255, 0.1);
 
   --glow:               radial-gradient(ellipse 60% 40% at 50% 0%, rgba(124, 106, 255, 0.04) 0%, transparent 70%);
+
+  /* Scrollbar */
+  --scrollbar-track:    transparent;
+  --scrollbar-thumb:    #d8d8e8;
+  --scrollbar-thumb-hover: #c4c4d8;
 }
 
 /* ── Base ── */
 html {
   font-size: 16px;
+  /* Use dynamic viewport height so mobile keyboard doesn't break layout */
+  height: 100%;
+  height: -webkit-fill-available;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg);
   color: var(--text);
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
@@ -122,6 +136,68 @@ body {
 #app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   background-image: var(--glow);
+}
+
+/* ── Themed scrollbars (webkit) ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 99px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* ── Skip-to-main link (accessibility) ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 12px;
+  z-index: 9999;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 10px 10px;
+  transition: top 0.15s ease !important;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ── Visually hidden (for screen readers) ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
