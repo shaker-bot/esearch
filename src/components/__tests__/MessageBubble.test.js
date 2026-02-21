@@ -11,7 +11,7 @@ describe('MessageBubble', () => {
 
     it('applies the "user" class', () => {
       const wrapper = mount(MessageBubble, { props: { role: 'user', text: 'hi' } })
-      expect(wrapper.classes()).toContain('user')
+      expect(wrapper.find('.msg').classes()).toContain('user')
     })
 
     it('shows "You" in the avatar', () => {
@@ -21,15 +21,16 @@ describe('MessageBubble', () => {
 
     it('has a descriptive aria-label', () => {
       const wrapper = mount(MessageBubble, { props: { role: 'user', text: 'hello' } })
-      expect(wrapper.attributes('aria-label')).toContain('You')
-      expect(wrapper.attributes('aria-label')).toContain('hello')
+      const label = wrapper.find('[role="article"]').attributes('aria-label')
+      expect(label).toContain('You')
+      expect(label).toContain('hello')
     })
   })
 
   describe('echo role', () => {
     it('applies the "echo" class', () => {
       const wrapper = mount(MessageBubble, { props: { role: 'echo', text: 'reply' } })
-      expect(wrapper.classes()).toContain('echo')
+      expect(wrapper.find('.msg').classes()).toContain('echo')
     })
 
     it('shows "eS" in the avatar', () => {
@@ -49,7 +50,7 @@ describe('MessageBubble', () => {
 
     it('has a descriptive aria-label', () => {
       const wrapper = mount(MessageBubble, { props: { role: 'echo', text: 'reply text' } })
-      expect(wrapper.attributes('aria-label')).toContain('eSearch')
+      expect(wrapper.find('[role="article"]').attributes('aria-label')).toContain('eSearch')
     })
   })
 
@@ -79,7 +80,7 @@ describe('MessageBubble', () => {
   describe('accessibility', () => {
     it('has role="article"', () => {
       const wrapper = mount(MessageBubble, { props: { role: 'user', text: 'hi' } })
-      expect(wrapper.attributes('role')).toBe('article')
+      expect(wrapper.find('[role="article"]').exists()).toBe(true)
     })
 
     it('avatar is aria-hidden', () => {
