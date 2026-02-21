@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { ref } from 'vue'
 
 // Mock both composables so tests are isolated from module-level singletons
 vi.mock('../../composables/useTheme.js', () => ({
@@ -43,7 +44,7 @@ describe('AppHeader', () => {
 
   it('shows the clear button when there are messages', async () => {
     useMessages.mockReturnValue({
-      messages: { value: [{ role: 'user', text: 'hi' }] },
+      messages: ref([{ role: 'user', text: 'hi' }]),
       clear: vi.fn(),
     })
     const wrapper = mount(AppHeader)
@@ -62,7 +63,7 @@ describe('AppHeader', () => {
   it('calls clear() when the clear button is clicked', async () => {
     const clear = vi.fn()
     useMessages.mockReturnValue({
-      messages: { value: [{ role: 'user', text: 'hi' }] },
+      messages: ref([{ role: 'user', text: 'hi' }]),
       clear,
     })
     const wrapper = mount(AppHeader)
